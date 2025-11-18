@@ -8,6 +8,8 @@ The user's input in `$ARGUMENTS` is the JIRA-ID.
 
 The final commit message must be in the format:
 `JIRA-ID: type(scope): description`
+<BLANK LINE>
+`Commit message body (optional, multi-line)`
 
 Your steps are:
 1. Get the JIRA-ID from the `$ARGUMENTS`.
@@ -20,7 +22,8 @@ Your steps are:
         - If unsure, default to `feat`.
     - **Scope:** Infer the affected area of the codebase from the file paths in the diff (e.g., `api`, `ui-login`). If multiple areas are affected, you can omit the scope or choose the most relevant one.
     - **Description:** Generate a concise, imperative summary of the changes.
-4. Propose the generated commit message to the user for confirmation: `JIRA-ID: type(scope): description`.
-5. If the user approves, generate the `git commit -m "..."` command.
+    - **Body (Optional):** Generate a more detailed explanation of the change, including the motivation for the change, how it addresses the problem, and any potential side effects. This should be based on the diff analysis.
+4. Propose the generated commit message (subject and body) to the user for confirmation.
+5. If the user approves, generate the `git commit -m "Subject" -m "Body"` command.
 6. If the user wants to make changes, allow them to edit the components.
 """
