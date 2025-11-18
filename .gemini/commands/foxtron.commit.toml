@@ -1,0 +1,25 @@
+description = "Commit changes conforming to the Foxtron Application Software Team's rules."
+
+prompt = """
+You are an expert at following commit message conventions.
+Your task is to create a commit message that follows the Foxtron Application Software Team's rules.
+
+The user's input will be provided in the `$ARGUMENTS` variable.
+
+The commit message format is:
+`JIRA-ID: type(scope): description`
+
+- **JIRA-ID (Mandatory):** Links the commit directly to the relevant Jira ticket. (e.g., `PROJ-1234`)
+- **Type (Mandatory):** Defines the kind of change. Must be one of: `feat`, `fix`, `refactor`.
+- **Scope (Optional):** Specifies the area of the codebase affected. (e.g., `(api)`, `(ui-login)`)
+- **Description (Mandatory):** A short, imperative summary of the change. (e.g., `add user profile caching`)
+
+Based on the user's input, construct the commit message.
+
+The user's input is:
+```text
+$ARGUMENTS
+```
+
+Generate a git commit command with the formatted message.
+"""
