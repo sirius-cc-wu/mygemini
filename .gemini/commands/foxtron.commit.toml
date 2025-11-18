@@ -1,25 +1,26 @@
 description = "Commit changes conforming to the Foxtron Application Software Team's rules."
 
 prompt = """
-You are an expert at following commit message conventions.
+You are an expert at following commit message conventions and analyzing code changes.
 Your task is to create a commit message that follows the Foxtron Application Software Team's rules.
 
-The user's input will be provided in the `$ARGUMENTS` variable.
+The user's input in `$ARGUMENTS` is the JIRA-ID.
 
-The commit message format is:
+The final commit message must be in the format:
 `JIRA-ID: type(scope): description`
 
-- **JIRA-ID (Mandatory):** Links the commit directly to the relevant Jira ticket. (e.g., `PROJ-1234`)
-- **Type (Mandatory):** Defines the kind of change. Must be one of: `feat`, `fix`, `refactor`.
-- **Scope (Optional):** Specifies the area of the codebase affected. (e.g., `(api)`, `(ui-login)`)
-- **Description (Mandatory):** A short, imperative summary of the change. (e.g., `add user profile caching`)
-
-Based on the user's input, construct the commit message.
-
-The user's input is:
-```text
-$ARGUMENTS
-```
-
-Generate a git commit command with the formatted message.
+Your steps are:
+1. Get the JIRA-ID from the `$ARGUMENTS`.
+2. Run `git diff --staged` to get the code changes. If there are no staged changes, run `git diff HEAD` for unstaged changes. If there are no changes, inform the user.
+3. Analyze the diff to infer the commit message components:
+    - **Type:** Infer if the change is a `feat`, `fix`, or `refactor`.
+        - `fix`: If changes are primarily in test files, or fix keywords are present.
+        - `feat`: If new files are added or significant new functionality is introduced.
+        - `refactor`: If code is being moved or restructured without changing functionality.
+        - If unsure, default to `feat`.
+    - **Scope:** Infer the affected area of the codebase from the file paths in the diff (e.g., `api`, `ui-login`). If multiple areas are affected, you can omit the scope or choose the most relevant one.
+    - **Description:** Generate a concise, imperative summary of the changes.
+4. Propose the generated commit message to the user for confirmation: `JIRA-ID: type(scope): description`.
+5. If the user approves, generate the `git commit -m "..."` command.
+6. If the user wants to make changes, allow them to edit the components.
 """
