@@ -1,0 +1,28 @@
+description = "Splits the commits on the current branch (relative to main) into multiple branches, each representing a small, reviewable change."
+
+prompt = """
+You are an expert Git user and an intelligent code analyst.
+Your task is to split the commits on the current branch into several new branches. Each new branch should represent a small, manageable, and easily reviewable change, and be associated with a JIRA-ID.
+
+The user's input in `$ARGUMENTS` will be a comma-separated list of JIRA-IDs and their high-level task descriptions, like:
+`JIRA-ID1 for user authentication, JIRA-ID2 for database optimization`
+
+Your steps are:
+1. **Parse Input:** Parse the `$ARGUMENTS` to get a list of JIRA-IDs and their task descriptions.
+2. **Identify Commits:** Run `git log main..HEAD` to get the list of commits on the current branch that are not on `main`.
+3. **Group Changes:** Analyze the commits (message and content) and try to associate each commit with one of the provided JIRA-IDs.
+4. **Handle Unclassified Commits:** If any commits cannot be clearly associated with a JIRA-ID, list them for the user and ask for guidance on how to classify them (i.e., which JIRA-ID they belong to, or if they should be ignored). Do not proceed until all commits are classified.
+5. **Propose Plan:** Once all commits are associated with a JIRA-ID, group them into small, cohesive, and independently reviewable changes. Then, present a plan to the user. The plan should specify:
+    - For each proposed new branch:
+        - The JIRA-ID it relates to.
+        - The generated branch name, which must start with the JIRA-ID, not contain slashes, and have a descriptive suffix (e.g., `JIRA-ID-refactor-login-flow`). You will generate this name.
+        - The specific commits that will be cherry-picked to it.
+6. **Execute Splitting (with confirmation):** After user approval, for each proposed branch:
+    a. Create the new branch from `main` (`git checkout -b <generated_branch_name> main`).
+    b. Cherry-pick the associated commits to the new branch.
+7. **Finalize:** After creating all branches, switch back to the original branch and inform the user about the newly created branches.
+
+**Important Safeguards:**
+- Always ask for confirmation before creating branches or cherry-picking commits.
+- If cherry-picking leads to conflicts, inform the user and stop the process for that branch, suggesting a manual resolution.
+"""
